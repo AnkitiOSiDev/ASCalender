@@ -35,7 +35,7 @@ extension Date {
     func isToday() -> Bool {
         let cal = Calendar.current
         let todayDayComponents = (cal as NSCalendar).components([.day,.month,.year], from: Date())
-        let dateComponents = (cal as NSCalendar).components([.day,.month,.year], from: Date())
+        let dateComponents = (cal as NSCalendar).components([.day,.month,.year], from: self)
         return todayDayComponents.day == dateComponents.day && todayDayComponents.month == dateComponents.month && todayDayComponents.year == dateComponents.year
     }
     

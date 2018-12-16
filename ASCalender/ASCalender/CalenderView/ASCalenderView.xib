@@ -10,9 +10,18 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ASCalenderView" customModule="ASCalender" customModuleProvider="target">
+            <connections>
+                <outlet property="btnNextMonth" destination="2vA-Tv-qAR" id="fGF-QW-jwX"/>
+                <outlet property="btnPreviousMonth" destination="8L1-DQ-slP" id="g2g-gq-Zmu"/>
+                <outlet property="collectionViewCalender" destination="rDZ-Nf-K6u" id="Bf9-JT-IUp"/>
+                <outlet property="contentView" destination="iN0-l3-epB" id="bI3-4W-Zlt"/>
+                <outlet property="lblCurrentDate" destination="Yhz-C1-UEm" id="nG5-wX-vQF"/>
+                <outlet property="lblSelectedDate" destination="mmZ-bH-qHs" id="h3H-Pj-IPC"/>
+            </connections>
+        </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="ASCalenderView" customModule="ASCalender" customModuleProvider="target">
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -39,7 +48,7 @@
                             </constraints>
                             <state key="normal" backgroundImage="LeftImage"/>
                             <connections>
-                                <action selector="btnPreviousMonthDidClicked:" destination="iN0-l3-epB" eventType="touchUpInside" id="L2N-kT-60k"/>
+                                <action selector="btnPreviousMonthDidClicked:" destination="-1" eventType="touchUpInside" id="vk0-wF-k9h"/>
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2vA-Tv-qAR">
@@ -50,7 +59,7 @@
                             </constraints>
                             <state key="normal" backgroundImage="RightImage"/>
                             <connections>
-                                <action selector="btnNextMonthDidClicked:" destination="iN0-l3-epB" eventType="touchUpInside" id="W3V-2f-KnA"/>
+                                <action selector="btnNextMonthDidClicked:" destination="-1" eventType="touchUpInside" id="nfp-Vy-2Vc"/>
                             </connections>
                         </button>
                         <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="rDZ-Nf-K6u">
@@ -230,13 +239,6 @@
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="E0E-Te-e5K" secondAttribute="trailing" id="nld-j9-Jbf"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <connections>
-                <outlet property="btnNextMonth" destination="2vA-Tv-qAR" id="dgw-FP-w6b"/>
-                <outlet property="btnPreviousMonth" destination="8L1-DQ-slP" id="6AP-AT-RJt"/>
-                <outlet property="collectionViewCalender" destination="rDZ-Nf-K6u" id="jMh-Pp-cRp"/>
-                <outlet property="lblCurrentDate" destination="Yhz-C1-UEm" id="hW1-wj-lit"/>
-                <outlet property="lblSelectedDate" destination="mmZ-bH-qHs" id="chF-6e-XBA"/>
-            </connections>
         </view>
     </objects>
     <resources>

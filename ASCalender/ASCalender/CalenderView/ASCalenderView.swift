@@ -8,21 +8,26 @@
 
 import UIKit
 
-class ASCalenderView: UIView {
+protocol CalendarViewDelegate: class {
+        func seletctedDate(_ value : Date?)
+}
 
+class ASCalenderView: UIView {
     
-    static var appDateFormat = "EEE, MMM dd"
-    
+    @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var lblSelectedDate: UILabel!
     @IBOutlet weak var lblCurrentDate: UILabel!
-    private var items = [[Date]]()                                              /// Items in the Date for showing on collection view
-    private var currentMonthDate = Date()                                /// Set the latest month on calendar
-    var selectedDate : Date = Date()
-    private var weeks = 0                                                          /// Need to add the weeks count as for collection section
-    
     @IBOutlet weak var btnPreviousMonth: UIButton!
     @IBOutlet weak var btnNextMonth: UIButton!
     @IBOutlet weak var collectionViewCalender: UICollectionView!
+    
+    private var arrDates = [[Date]]()                                            /// arrDates in the Date for showing on collection view
+    private var currentMonthDate = Date()                                 /// Set the latest month on calendar
+    var selectedDate : Date?
+    private var weeks = 0                                                             /// Need to add the weeks count as for collection section
+ 
+    weak var delegate: CalendarViewDelegate?
+    
     
     private lazy var dateFormatter: DateFormatter = {                           /// Date formater as to set proper format from Date()
         let formatter  = DateFormatter()
@@ -33,17 +38,34 @@ class ASCalenderView: UIView {
     
     lazy var appDateFormatter: DateFormatter = {                           /// Date formater as to set proper format used in App
         let formatter  = DateFormatter()
-        formatter.dateFormat = ASCalenderView.appDateFormat
+        formatter.dateFormat = appDateFormat
         formatter.timeZone = .current
         return formatter
     }()
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        self.layer.borderWidth  = 0
+    @IBInspectable open var appDateFormat: String = "EEE, MMM dd" {
+        didSet {
+            setCalendar(fromDate: currentMonthDate)
+        }
+    }
+    
+    // MARK: Methods
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        loadView()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        loadView()
     }
     
     func loadView()  {
+        Bundle.main.loadNibNamed("ASCalenderView", owner: self, options: nil)
+        addSubview(contentView)
+        contentView.frame = self.bounds
+        contentView.backgroundColor = UIColor.darkGray
+        contentView.translatesAutoresizingMaskIntoConstraints = true
         collectionViewCalender.register(ASCalenderDateCollectionViewCell.nib, forCellWithReuseIdentifier: ASCalenderDateCollectionViewCell.identifier)
         collectionViewCalender.delegate = self
         collectionViewCalender.dataSource = self
@@ -52,6 +74,7 @@ class ASCalenderView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        collectionViewCalender.reloadData()
     }
     
     
@@ -97,7 +120,7 @@ class ASCalenderView: UIView {
         }
         let maxCol = 7
         let maxRow = weeks
-        items.removeAll(keepingCapacity: false)
+        arrDates.removeAll(keepingCapacity: false)
         var index = 0
         for _ in 0..<maxRow {
             var colItems = [Date]()
@@ -105,12 +128,12 @@ class ASCalenderView: UIView {
                 colItems.append(dates[index])
                 index += 1
             }
-            items.append(colItems)
+            arrDates.append(colItems)
         }
         
         DispatchQueue.main.async {
             self.lblCurrentDate.text = "\(monthSymbol) \(year!)"
-            self.lblSelectedDate.text = self.appDateFormatter.string(from:  self.selectedDate)
+            self.lblSelectedDate.text = self.appDateFormatter.string(from:  self.selectedDate!)
         }
         self.collectionViewCalender.reloadData()
     }
@@ -134,10 +157,10 @@ class ASCalenderView: UIView {
 
 extension ASCalenderView : UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let date = items[indexPath.section][indexPath.row]
+        let date = arrDates[indexPath.section][indexPath.row]
         if (date.isBetweenDates(beginDate: currentMonthDate.startOfMonth(), endDate: currentMonthDate.endOfMonth())){
-            selectedDate = items[indexPath.section][indexPath.row]
-            self.lblSelectedDate.text = self.appDateFormatter.string(from:  self.selectedDate)
+            selectedDate = arrDates[indexPath.section][indexPath.row]
+            self.lblSelectedDate.text = self.appDateFormatter.string(from:  self.selectedDate!)
             collectionView.reloadData()
         }
         
@@ -156,10 +179,10 @@ extension ASCalenderView : UICollectionViewDataSource,UICollectionViewDelegateFl
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ASCalenderDateCollectionViewCell.identifier, for: indexPath) as! ASCalenderDateCollectionViewCell
-        cell.configureCell(date: items[indexPath.section][indexPath.row], currentDate: currentMonthDate)
-        let date = items[indexPath.section][indexPath.row]
+        cell.configureCell(date: arrDates[indexPath.section][indexPath.row], currentDate: currentMonthDate)
+        let date = arrDates[indexPath.section][indexPath.row]
         
-        switch date.compare(selectedDate) {
+        switch date.compare(selectedDate!) {
         case .orderedAscending:
             cell.viewSelected.backgroundColor = UIColor.clear
         case .orderedSame:
